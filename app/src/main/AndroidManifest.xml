@@ -20,10 +20,6 @@
         android:theme="@style/Theme.AppFlyerOneSignal">
         <meta-data android:name="com.pushwoosh.appid" android:value="@string/pushWooshAppId" />
         <meta-data android:name="com.pushwoosh.senderid" android:value="@string/fcm_sender_id" />
-        <activity android:name="com.example.test.MainActivity"
-            android:configChanges="screenLayout|orientation|screenSize|layoutDirection">
-
-        </activity>
         <activity android:name="com.example.test.ComposeMainActivity"
             android:configChanges="screenLayout|orientation|screenSize|layoutDirection">
             <intent-filter>

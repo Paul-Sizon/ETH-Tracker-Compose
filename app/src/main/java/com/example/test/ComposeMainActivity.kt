@@ -26,7 +26,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
 
 @AndroidEntryPoint
 class ComposeMainActivity : AppCompatActivity() {
@@ -49,7 +48,6 @@ class ComposeMainActivity : AppCompatActivity() {
 
         setContent {
             App()
-//            LinearProgressIndicatorSample()
         }
     }
 
@@ -77,11 +75,11 @@ class ComposeMainActivity : AppCompatActivity() {
                 )
                 Spacer(modifier = Modifier.padding(30.dp))
 
-                Text(text = price, color = decideColor(price), fontSize = 30.sp)
+                showPrice(price = price)
 
                 Spacer(modifier = Modifier.padding(30.dp))
 
-                LinearProgressIndicatorSample()
+                buttonAndProgress()
 
             }
 
@@ -89,9 +87,8 @@ class ComposeMainActivity : AppCompatActivity() {
         }
     }
 
-    @Preview
     @Composable
-    fun LinearProgressIndicatorSample() {
+    fun buttonAndProgress() {
         var progress by remember { mutableStateOf(0.0f) }
         var mycolor by remember { mutableStateOf(Color.DarkGray) }
         var enableButton by remember { mutableStateOf(true) }
@@ -137,51 +134,42 @@ class ComposeMainActivity : AppCompatActivity() {
 
     }
 
-
-    // todo put to vm??
-    private fun decideColor(price: String): Color {
+    @Composable
+    private fun showPrice(price: String) {
         lastPrice = sharedPref.getString("eth", "0.0")
         editor.putString("eth", price).apply()
 
         if (lastPrice == "null") lastPrice = "0.0"
         if (price != "null") {
             if (price.toFloat() >= lastPrice?.toFloat()!!) {
-                return Color.Green
+                Text(text = price, color = Color.Green, fontSize = 30.sp)
             } else {
-                return Color.Red
+                Text(text = price, color = Color.Red, fontSize = 30.sp)
             }
         } else {
-            return Color.White
+            Text(text = price, color = Color.White, fontSize = 30.sp)
         }
-
-
     }
 
-
+    @Preview
     @Composable
-    fun PriceData() {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(text = "2342.23564563345".dropLast(7), color = Color.White, fontSize = 30.sp)
-            Spacer(modifier = Modifier.padding(30.dp))
+    fun MyPreview() {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Button(
-                onClick = { viewModel.post() },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray)
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
+                onClick = {}
             ) {
                 Text(text = "GET LATEST PRICE", color = Color.White)
             }
+            Spacer(Modifier.height(20.dp))
+                LinearProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.width(150.dp)
+                )
         }
-
-
     }
 }
 
-//container with grey color
-//image eth logo
-//text eth
-//price (livedata / state)
-//button to update
 
 
 
