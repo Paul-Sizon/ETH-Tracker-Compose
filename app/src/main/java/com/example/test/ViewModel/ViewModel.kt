@@ -30,10 +30,11 @@ class MyViewModel @Inject constructor(
         try {
             val response =
                 repository.post()
-            _trackLiveData.postValue(response.rate.toString())
+            _trackLiveData.postValue(response.rate.toString().dropLast(7))
 //            _trackLiveData.value = response
         } catch (e: Exception) {
 //            _trackLiveData.postValue(null)
+            _trackLiveData.postValue("0.0")
             Log.i("meowViewmodelPost", e.message.toString())
         }
     }
