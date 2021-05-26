@@ -54,12 +54,6 @@ android { compileSdkVersion 30
 
 dependencies {
 
-    //adjust
-    implementation 'com.adjust.sdk:adjust-android:4.21.1'
-
-    //appmetroca
-    implementation 'com.yandex.android:mobmetricalib:3.16.2'
-
 //glide
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
@@ -70,10 +64,6 @@ dependencies {
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
     kapt "androidx.hilt:hilt-compiler:1.0.0-beta01"
 
-
-    //AppsFlyer
-    implementation 'com.appsflyer:af-android-sdk:5.4.3'
-    implementation 'com.android.installreferrer:installreferrer:2.2'
 
 
     // else

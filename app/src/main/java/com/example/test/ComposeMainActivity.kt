@@ -164,7 +164,7 @@ class ComposeMainActivity : AppCompatActivity() {
             Spacer(Modifier.height(20.dp))
                 LinearProgressIndicator(
                     color = Color.White,
-                    modifier = Modifier.width(150.dp)
+                    modifier = Modifier.width(150.dp).height(20.dp)
                 )
         }
     }
