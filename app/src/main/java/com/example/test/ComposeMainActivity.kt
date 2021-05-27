@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -90,28 +91,40 @@ class ComposeMainActivity : AppCompatActivity() {
     @Composable
     fun buttonAndProgress() {
         var progress by remember { mutableStateOf(0.0f) }
-        var mycolor by remember { mutableStateOf(Color.DarkGray) }
+        var alpha by remember { mutableStateOf(1f) }
         var enableButton by remember { mutableStateOf(true) }
 
         val animatedProgress = animateFloatAsState(
             targetValue = progress,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
         ).value
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Button(
-                colors = ButtonDefaults.buttonColors(backgroundColor = mycolor),
+
+        Box(contentAlignment = Alignment.Center) {
+            if (!enableButton) {
+                LinearProgressIndicator(
+                    progress = animatedProgress,
+                    color = Color.DarkGray,
+                    modifier = Modifier
+                        .matchParentSize()
+                        .padding(1.dp)
+                )
+            }
+            OutlinedButton(
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray),
+                modifier = Modifier
+                    .alpha(alpha),
                 enabled = enableButton,
                 onClick = {
                     viewModel.post()
                     enableButton = false
                     CoroutineScope(Dispatchers.Main).launch {
-                        mycolor = Color.LightGray
+                        alpha = 0.8f
                         while (progress <= 1f) {
                             progress += 0.1f
                             delay(300)
                         }
                         delay(100)
-                        mycolor = Color.DarkGray
+                        alpha = 1f
                         progress = 0.0f
                         enableButton = true
                     }
@@ -119,16 +132,6 @@ class ComposeMainActivity : AppCompatActivity() {
             ) {
                 Text(text = "GET LATEST PRICE", color = Color.White)
             }
-
-            Spacer(Modifier.height(20.dp))
-            if (!enableButton) {
-                LinearProgressIndicator(
-                    progress = animatedProgress,
-                    color = Color.White,
-                    modifier = Modifier.width(100.dp)
-                )
-            }
-
         }
 
 
@@ -154,19 +157,23 @@ class ComposeMainActivity : AppCompatActivity() {
     @Preview
     @Composable
     fun MyPreview() {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Button(
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
-                onClick = {}
+        Box(contentAlignment = Alignment.Center) {
+            LinearProgressIndicator(
+                color = Color.DarkGray,
+                modifier = Modifier
+                    .matchParentSize()
+            )
+            OutlinedButton(
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0x571D1D1D)),
+                onClick = {},
+                contentPadding = PaddingValues(0.dp)
             ) {
                 Text(text = "GET LATEST PRICE", color = Color.White)
             }
-            Spacer(Modifier.height(20.dp))
-                LinearProgressIndicator(
-                    color = Color.White,
-                    modifier = Modifier.width(150.dp).height(20.dp)
-                )
+
         }
+
+
     }
 }
 
