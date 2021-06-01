@@ -17,7 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.ViewModel.MyViewModel
@@ -35,6 +37,7 @@ class ComposeMainActivity : AppCompatActivity() {
     private lateinit var editor: SharedPreferences.Editor
     private var lastPrice: String? = ""
     val viewModel: MyViewModel by viewModels()
+    val fontFamily = FontFamily(Font(R.font.cutivemono_regular))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +47,7 @@ class ComposeMainActivity : AppCompatActivity() {
         editor = SharedPrefs(
             applicationContext
         ).editor
+
 
         viewModel.post()
 
@@ -55,6 +59,11 @@ class ComposeMainActivity : AppCompatActivity() {
 
     @Composable
     fun App() {
+        MainScreen()
+    }
+
+    @Composable
+    fun MainScreen() {
         val priceLiveData by viewModel.trackLiveData.observeAsState()
         var price = priceLiveData.toString()
 
@@ -145,38 +154,29 @@ class ComposeMainActivity : AppCompatActivity() {
         if (lastPrice == "null") lastPrice = "0.0"
         if (price != "null") {
             if (price.toFloat() >= lastPrice?.toFloat()!!) {
-                Text(text = price, color = Color.Green, fontSize = 30.sp)
+                Text(
+                    text = price,
+                    color = Color.Green,
+                    fontSize = 28.sp,
+                    fontFamily = fontFamily,
+                    fontWeight = FontWeight.Bold
+                )
             } else {
-                Text(text = price, color = Color.Red, fontSize = 30.sp)
+                Text(
+                    text = price,
+                    color = Color.Red,
+                    fontSize = 28.sp,
+                    fontFamily = fontFamily,
+                    fontWeight = FontWeight.Bold
+                )
             }
         } else {
             Text(text = price, color = Color.White, fontSize = 30.sp)
+
         }
     }
 
-    @Preview
-    @Composable
-    fun MyPreview() {
-        Box(contentAlignment = Alignment.Center) {
-            LinearProgressIndicator(
-                color = Color.DarkGray,
-                modifier = Modifier
-                    .matchParentSize()
-            )
-            OutlinedButton(
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0x571D1D1D)),
-                onClick = {},
-                contentPadding = PaddingValues(0.dp)
-            ) {
-                Text(text = "GET LATEST PRICE", color = Color.White)
-            }
 
-        }
-
-
-    }
 }
-
-
 
 
