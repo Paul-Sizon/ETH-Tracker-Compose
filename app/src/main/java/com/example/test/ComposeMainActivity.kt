@@ -2,9 +2,11 @@ package com.example.test
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,7 +25,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.test.ViewModel.Cost
 import com.example.test.ViewModel.MyViewModel
+import com.example.test.network.models.ViewState
 import com.example.test.sharedPrefs.SharedPrefs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +40,7 @@ class ComposeMainActivity : AppCompatActivity() {
 
     lateinit var sharedPref: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
-    private var lastPrice: String? = ""
+    private var lastPrice: Double = 0.0
     val viewModel: MyViewModel by viewModels()
     val fontFamily = FontFamily(Font(R.font.cutivemono_regular))
 
@@ -49,7 +53,7 @@ class ComposeMainActivity : AppCompatActivity() {
             applicationContext
         ).editor
 
-
+        Log.v("TAG", "onCreate")
         viewModel.post()
 
         setContent {
@@ -66,8 +70,8 @@ class ComposeMainActivity : AppCompatActivity() {
     @Composable
     fun MainScreen() {
         val priceLiveData by viewModel.trackLiveData.observeAsState()
-        var price = priceLiveData.toString()
-
+        val price = priceLiveData ?: return
+        Log.v("TAG", "mainSCreen")
         Box(
             modifier = Modifier
                 .background(Color.Gray)
@@ -86,7 +90,11 @@ class ComposeMainActivity : AppCompatActivity() {
                 )
                 Spacer(modifier = Modifier.padding(30.dp))
 
-                showPrice(price = price)
+                when (price) {
+                    is ViewState.Response -> showPrice(price = price.data)
+                    is ViewState.Error -> showError(price.text)
+                }
+
 
                 Spacer(modifier = Modifier.padding(30.dp))
 
@@ -96,6 +104,25 @@ class ComposeMainActivity : AppCompatActivity() {
 
 
         }
+    }
+
+
+    @Composable
+    private fun showPrice(price: Cost) {
+        val color by animateColorAsState(if (price.new >= (price.old)) Color.Green else Color.Red)
+        Text(
+            text = price.new.toString(),
+            color = color,
+            fontSize = 28.sp,
+            fontFamily = fontFamily,
+            fontWeight = FontWeight.Bold
+        )
+
+    }
+
+    @Composable
+    private fun showError(text: String) {
+        Text(text = text, color = Color.White, fontSize = 28.sp)
     }
 
     @Composable
@@ -144,41 +171,7 @@ class ComposeMainActivity : AppCompatActivity() {
                 Text(text = "GET LATEST PRICE", color = Color.White)
             }
         }
-
-
     }
-
-    @Composable
-    private fun showPrice(price: String) {
-        lastPrice = sharedPref.getString("eth", "0.0")
-        editor.putString("eth", price).apply()
-
-        if (lastPrice == "null") lastPrice = "0.0"
-        if (price != "null") {
-            if (price.toFloat() >= lastPrice?.toFloat()!!) {
-                Text(
-                    text = price,
-                    color = Color.Green,
-                    fontSize = 28.sp,
-                    fontFamily = fontFamily,
-                    fontWeight = FontWeight.Bold
-                )
-            } else {
-                Text(
-                    text = price,
-                    color = Color.Red,
-                    fontSize = 28.sp,
-                    fontFamily = fontFamily,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        } else {
-            Text(text = price, color = Color.White, fontSize = 30.sp)
-
-        }
-    }
-
-
 }
 
 

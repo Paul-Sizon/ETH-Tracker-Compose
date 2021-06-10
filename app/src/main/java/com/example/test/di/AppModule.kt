@@ -10,8 +10,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 
-const val BASE_URL_2 = "https://chain.so/api/v2/get_info/ETH/"
+
 const val BASE_URL = "https://rest.coinapi.io/v1/exchangerate/ETH/USD/"
+//const val BASE_URL_2 = "https://chain.so/api/v2/get_info/ETH/"
 
 @Module
 @InstallIn(SingletonComponent::class)
